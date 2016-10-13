@@ -1,4 +1,9 @@
-//init
+/*
+ *	create.init.js,一个基于createjs游戏框架初始化插件
+ *	https://github.com/coderray/createjs.init.js
+ * 	296773006@qq.com | Ray
+ * 	2016.10.13
+ */
 var initCjs = (function(w,cjs){
 	var def = {
 		"scaleMode":"exactFit",//适配模式:exactFit | fixedWidth | noScale | showAll
