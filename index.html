@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="format-detection" content="email=no" />
+		<title>createjs</title>
+		<link rel="stylesheet" type="text/css" href="css/base.css" />
+		<style type="text/css">
+			.loading{
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				z-index: 10000;
+				background-color: #b0ebe9;
+			}
+			#loading{
+				position: relative;
+				width: 100%;
+				height: 30px;
+				top: 50%;
+				margin-top: -15px;
+				text-align: center;
+				font-size: 20px;
+				line-height: 30px;
+				color: #000000;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="loading">
+			<p id="loading">0%</p>
+		</div>
+		<div class="canvas-wrap">
+			<canvas id="canvas" width="" height=""></canvas>
+		</div>
+		<script src="js/easeljs-0.8.1.min.js"></script>
+		<script src="js/preloadjs-0.6.1.min.js"></script>
+		<script src="js/tweenjs-0.6.1.min.js"></script>
+		<script src="js/zepto.min.js"></script>
+		<script src="js/createjs.init.js"></script>
+		<script src="js/GAME.js"></script>
+		<script type="text/javascript">
+//			function onProgress(p){
+//				document.getElementById("loading").innerHTML = (p/1*100) + "%";
+//				console.log("加载中……" + p);
+//			}
+//			function onComplete(p){
+//				console.log("加载完毕！");
+//				$(".loading").hide();
+//				GAME.init();//初始化游戏
+//			}
+			$(function(){
+				//加载资源
+				var manifest = [
+					{id:'indexBg',src:'bg_index.jpg'},
+					{id:'indexBg2',src:'bg_index.jpg'}
+				];
+				//初始化
+				window.INIT = new initCjs({
+					'id':'canvas',//canvas的id
+					'url':"img/",//资源路径
+					'width':640,
+					'height':1039,
+					'frameRate':60,//刷新帧率
+					'useSound':true,//是否使用音频sound.js
+					'scaleMode':'exactFit',//适配模式:exactFit | fixedWidth | noScale | showAll
+					'preload':manifest,//加载资源组:Array | String | Object
+					'autoLoad':true,//是否自动加载
+					'onProgress':GAME.onProgress,//加载中回调
+					'onComplete':GAME.onComplete//加载完成回调
+				});
+				//当autoLoad为false时，可以使用loading方法加载资源
+//				INIT.loading();
+				//画布舞台stage
+//				INIT.stage;
+				// 加载器loader
+//				INIT.loader;
+				//默认是自动渲染画布，也可以手动开启
+//				INIT.startTick();
+				//停止更新画布
+//				INIT.stopTick();
+			});
+
+		</script>
+	</body>
+</html>
