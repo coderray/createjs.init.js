@@ -5,7 +5,6 @@ var initCjs = (function(w,cjs){
 		"frameRate":60,
 		"autoRender":true,
 		"autoLoad":true,
-		"useLoad":true,
 		"loadType":0,//0代表div显示加载，1代表使用canvas绘制loading
 		"useSound":true,//是否使用soundjs
 		"width":640,//设计图宽高
@@ -15,7 +14,8 @@ var initCjs = (function(w,cjs){
 		"id":'',
 		"preload":[],
 		"bgColor":"#fff",
-		"callback":false,
+		"xhr":true,//是否跨域
+		"callback":true,
 		'onProgress':false,
 		'onComplete':false
 	}
@@ -76,8 +76,6 @@ var initCjs = (function(w,cjs){
 		this.height = def.height;
 		SCALE_X = CANS_W/def.width;
 		SCALE_Y = CANS_H/def.height;
-		this.scaleX = SCALE_X;
-		this.scaleY = SCALE_Y;
 		var _scaleX = SCALE_X,
 			_scaleY = SCALE_Y;
 		switch (def.scaleMode){
@@ -114,26 +112,22 @@ var initCjs = (function(w,cjs){
 			this.startTick();
 		}
 		//加载队列
-		if(def.useLoad){
-			var queue = new cjs.LoadQueue();
-			this.loader = queue;
-			//是否加载soundjs
-			if(def.useSound){
-				queue.installPlugin(cjs.Sound);
-			}
+		var queue = new cjs.LoadQueue(!def.xhr);
+		this.loader = queue;
+		//是否使用soundjs
+		if(def.useSound){
+			queue.installPlugin(cjs.Sound);
 		}
 		//资源加载
 		this.loading = function(){
-			if(def.useLoad){
-				queue.on("progress", function(){
-					(def.onProgress && typeof def.onProgress == 'function') && def.onProgress(queue.progress);
-				},this);
-				queue.on("complete", function(){
-					(def.onComplete && typeof def.onComplete == 'function') && def.onComplete(queue.progress);
-					return true;
-				},this);
-				queue.loadManifest(def.preload);
-			}
+			queue.on("progress", function(){
+				(def.onProgress && typeof def.onProgress == 'function') && def.onProgress(queue.progress);
+			},this);
+			queue.on("complete", function(){
+				(def.onComplete && typeof def.onComplete == 'function') && def.onComplete(queue.progress);
+				return true;
+			},this);
+			queue.loadManifest(def.preload);
 		}
 		//是否自动加载
 		if(def.autoLoad){
