@@ -102,7 +102,7 @@ var initCjs = (function(w,cjs){
 		function _autoRun(){
 			stage.update();
 		}
-		cjs.Ticker.timingMode = cjs.Ticker.RAF;
+		cjs.Ticker.timingMode = cjs.Ticker.RAF_SYNCHED;
 		cjs.Ticker.framerate = def.frameRate;
 		this.startTick = function(){
 			cjs.Ticker.addEventListener('tick',_autoRun);
