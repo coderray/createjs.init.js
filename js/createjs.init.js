@@ -1,4 +1,9 @@
-//init
+/*
+ *	initial createjs
+ * 	2016.10
+ *	Ray
+ * 	296773006@qq.com
+ */
 var initCjs = (function(w,cjs){
 	var def = {
 		"scaleMode":"exactFit",//适配模式:exactFit | fixedWidth | noScale | showAll
@@ -11,6 +16,7 @@ var initCjs = (function(w,cjs){
 		"width":640,//设计图宽高
 		"height":1014,
 		"url":"images/",
+		'localUrl':"images/",//本地路径
 		"debug":false,
 		"id":'',
 		"xhr":true,//图片是否跨域
@@ -18,7 +24,8 @@ var initCjs = (function(w,cjs){
 		"bgColor":"#fff",
 		"callback":false,
 		'onProgress':false,
-		'onComplete':false
+		'onComplete':false,
+		'onError':false
 	}
 	var stage,
 		canvas,
@@ -40,10 +47,13 @@ var initCjs = (function(w,cjs){
 		}
 		//拼接完整资源路径
 		def.preload.map(function(item,index){
+			var _reg = /\.mp3$/;
 			if(typeof item == 'object'){
-				def.preload[index].src = def.url + item.src;
+				var _path = _reg.test(def.preload[index].src) ? def.localUrl : def.url;
+				def.preload[index].src = _path + item.src;
 			}else{
-				def.preload[index] = def.url + item;
+				var _path = _reg.test(def.preload[index]) ? def.localUrl : def.url;
+				def.preload[index] = _path + item;
 			}
 		});
 		//创建舞台和设定样式
@@ -65,39 +75,60 @@ var initCjs = (function(w,cjs){
 				return false;
 			}else{
 				canvas = D.getElementById(def.id);
-				canvas.setAttribute("style","width: 100%;height: 100%;");
+				canvas.setAttribute("style",'width: 100%;height: 100%;background-color:' + def.bgColor + ';"');
 			}
 		}
-		//适配模式
-		canvas.width = CANS_W;
-		canvas.height = CANS_H;
+		//适配
 		stage = new cjs.Stage(canvas);
 		this.stage = stage;
 		this.width = def.width;
 		this.height = def.height;
-		SCALE_X = CANS_W/def.width;
-		SCALE_Y = CANS_H/def.height;
 		this.scaleX = SCALE_X;
 		this.scaleY = SCALE_Y;
-		var _scaleX = SCALE_X,
-			_scaleY = SCALE_Y;
-		switch (def.scaleMode){
-			case 'fixedWidth':
-				_scaleY = SCALE_X;
-				break;
-			case 'showAll':
-				if(def.width/def.height > SCREEN_W/SCREEN_H){
-					_scaleX = SCALE_Y;
-				}else{
+		//resize窗口
+		this.resize = function(){
+			SCREEN_W = W.innerWidth,
+			SCREEN_H = W.innerHeight,
+			CANS_W = SCREEN_W*DPR,
+			CANS_H = SCREEN_H*DPR,
+			canvas.width = CANS_W;
+			canvas.height = CANS_H;
+			SCALE_X = CANS_W/def.width;
+			SCALE_Y = CANS_H/def.height;
+			var _scaleX = SCALE_X,
+				_scaleY = SCALE_Y;
+			/*模式*/
+			switch (def.scaleMode){
+				case 'fixedWidth':
 					_scaleY = SCALE_X;
-				}
-				break;
-			case 'exactFit':
-			default:
-				break;
+					break;
+				case 'showAll':
+					if(def.width/def.height > SCREEN_W/SCREEN_H){
+						_scaleX = SCALE_X;
+						_scaleY = SCALE_X;
+						stage.x = 0;
+						stage.y = def.height*(SCALE_Y - SCALE_X)/2;
+					}else{
+						_scaleY = SCALE_Y;
+						_scaleX = SCALE_Y;
+						stage.y = 0;
+						stage.x = def.width*(SCALE_X - SCALE_Y)/2;
+					}
+					break;
+				case 'noScale':
+					_scaleX = 1;
+					_scaleY = 1;
+					canvas.width = def.width;
+					canvas.height = def.height;
+					break;
+				case 'exactFit':
+				default:
+					break;
+			}
+			stage.scaleX = _scaleX;
+			stage.scaleY = _scaleY;
 		}
-		stage.scaleX = _scaleX;
-		stage.scaleY = _scaleY;
+		this.resize();
 		//渲染帧率
 		function _autoRun(){
 			stage.update();
@@ -131,6 +162,10 @@ var initCjs = (function(w,cjs){
 				},this);
 				queue.on("complete", function(){
 					(def.onComplete && typeof def.onComplete == 'function') && def.onComplete(queue.progress);
+					return true;
+				},this);
+				queue.on("error", function(msg){
+					(def.onError && typeof def.onError == 'function') && def.onError(msg);
 					return true;
 				},this);
 				queue.loadManifest(def.preload);
