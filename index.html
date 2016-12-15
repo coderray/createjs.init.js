@@ -36,12 +36,12 @@
 			<p id="loading">0%</p>
 		</div>
 		<div class="canvas-wrap">
-			<canvas id="canvas" width="" height=""></canvas>
+			<canvas id="canvas" width="640" height="1039"></canvas>
 		</div>
-		<script src="js/lib/easeljs-0.8.1.min.js"></script>
-		<script src="js/lib/preloadjs-0.6.1.min.js"></script>
-		<script src="js/lib/tweenjs-0.6.1.min.js"></script>
-		<script src="js/lib/zepto.min.js"></script>
+		<script src="js/easeljs-0.8.1.min.js"></script>
+		<script src="js/preloadjs-0.6.1.min.js"></script>
+		<script src="js/tweenjs-0.6.1.min.js"></script>
+		<script src="js/zepto.min.js"></script>
 		<script src="js/createjs.init.js"></script>
 		<script src="js/GAME.js"></script>
 		<script type="text/javascript">
@@ -68,10 +68,9 @@
 					'height':1039,
 					'frameRate':60,//刷新帧率
 					'useSound':true,//是否使用音频sound.js
-					'scaleMode':'exactFit',//适配模式:exactFit | fixedWidth | noScale | showAll
+					'scaleMode':'showAll',//适配模式:exactFit | fixedWidth | noScale | showAll
 					'preload':manifest,//加载资源组:Array | String | Object
 					'autoLoad':true,//是否自动加载
-					'xhr':true,//是否跨域
 					'onProgress':GAME.onProgress,//加载中回调
 					'onComplete':GAME.onComplete//加载完成回调
 				});
@@ -85,6 +84,7 @@
 //				INIT.startTick();
 				//停止更新画布
 //				INIT.stopTick();
+				$(window).on("resize",INIT.resize);
 			});
 
 		</script>
