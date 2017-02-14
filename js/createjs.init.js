@@ -11,8 +11,10 @@ var initCjs = (function(w,cjs){
 		"autoRender":true,
 		"autoLoad":true,
 		"useLoad":true,
+		'position':false,//容器位置
 		"loadType":0,//0代表div显示加载，1代表使用canvas绘制loading
 		"useSound":true,//是否使用soundjs
+		'useTouch':false,//是否启用touch
 		"width":640,//设计图宽高
 		"height":1014,
 		"url":"images/",
@@ -101,6 +103,9 @@ var initCjs = (function(w,cjs){
 			switch (def.scaleMode){
 				case 'fixedWidth':
 					_scaleY = SCALE_X;
+//					var _py = def.position ? (def.position == 'bottom' ? def.height*(1-(SCALE_X ?)) : 0) : 0;
+//					stage.y = Math.abs(_py);
+//					console.log();
 					break;
 				case 'showAll':
 					if(def.width/def.height > SCREEN_W/SCREEN_H){
@@ -137,9 +142,11 @@ var initCjs = (function(w,cjs){
 		cjs.Ticker.framerate = def.frameRate;
 		this.startTick = function(){
 			cjs.Ticker.addEventListener('tick',_autoRun);
+			def.useTouch && cjs.Touch.enable(stage);
 		}
 		this.stopTick = function(){
 			cjs.Ticker.removeEventListener('tick',_autoRun);
+			def.useTouch && cjs.Touch.disable(stage);
 		}
 		//是否自动渲染
 		if(def.autoRender){
